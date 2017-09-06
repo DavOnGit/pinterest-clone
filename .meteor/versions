@@ -24,7 +24,6 @@ ecmascript-runtime-client@0.4.3
 ecmascript-runtime-server@0.4.1
 ejson@1.0.13
 email@1.2.3
-example-simple@0.0.0
 fourseven:scss@4.5.4
 geojson-utils@1.0.10
 hot-code-push@1.0.4
@@ -48,6 +47,7 @@ npm-bcrypt@0.9.3
 npm-mongo@2.2.30
 ordered-dict@1.0.9
 percolatestudio:synced-cron@1.1.0
+pinterest-clone@0.0.0
 promise@0.8.9
 random@1.0.10
 rate-limit@1.0.8
@@ -70,6 +70,7 @@ url@1.1.0
 vulcan:accounts@1.7.0
 vulcan:core@1.7.0
 vulcan:forms@1.7.0
+vulcan:forms-upload@1.7.0
 vulcan:i18n@1.7.0
 vulcan:i18n-en-us@1.7.0
 vulcan:lib@1.7.0

@@ -1,0 +1,47 @@
+.pic-list {
+  .loading-masonry { padding: 10px }
+  
+  .pics-item{
+    // img{
+    //   width: 100%;
+    // }
+    &:hover{
+      .pics-meta{
+        opacity: 1;
+        background: rgba(0,0,0,0.65);
+      }
+    }
+    cursor: pointer;
+  }
+  .pics-meta{
+    display: flex;
+    opacity: 0;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    color: white;
+    pointer-events: none;
+  }
+  
+  .pic-add-icon {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background-color: deeppink;
+    border-radius: 50%;
+    opacity: .8;
+    
+    .icon {
+      line-height: 50px;
+      color: #fff;
+      font-size: 22px;
+      vertical-align: middle;
+    }
+  }
+}

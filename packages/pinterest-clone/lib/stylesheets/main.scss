@@ -1,0 +1,46 @@
+@import 'commons/mixins';
+
+@import 'components/Loading';
+@import 'components/PicsList';
+@import 'components/PicsDetails';
+
+body { background: #FAFAFA }
+
+#wrapper {
+  width: 100%;
+  margin: 0;
+}
+
+.container-fluid { max-width: 1000px }
+
+.footer {
+  text-align: center;
+}
+
+.navbar {
+  min-height: 70px;
+  border-radius: 0;
+}
+
+.navbar-header {
+  height: 70px;
+}
+
+.main {
+  position: relative;
+  min-height: calc(100vh - 92px);
+  min-width: 340px;
+}
+
+.modal_close_btn {
+  position: relative;
+  top: -13px;
+  right: -6px;
+}
+
+.pics-delete-link, .commentsInstagram-delete-link {
+  cursor: pointer;
+  
+}
+
+a { text-decoration: none !important }
