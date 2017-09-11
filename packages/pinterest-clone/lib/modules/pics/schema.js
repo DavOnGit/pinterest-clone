@@ -43,22 +43,27 @@ const schema = {
       }
     },
     viewableBy: ['guests'],
-    insertableBy: ['members'],
-    editableBy: ['members']
+    insertableBy: ['members']
   },
   thumbnailUrl: {
     type:  String,
     hidden: true,
     viewableBy: ['guests'],
     insertableBy: ['members'],
-    editableBy: ['members']
+    editableBy: ['members'],
+    onEdit: (document) => {
+      return document.thumbnailUrl;
+    }
   },
   aspectRatio: {
     type: Number,
     hidden: true,
     viewableBy: ['guests'],
     insertableBy: ['members'],
-    editableBy: ['members']
+    editableBy: ['members'],
+    onEdit: (document) => {
+      return document.aspectRatio;
+    }
   },
   body: {
     label: 'Body',

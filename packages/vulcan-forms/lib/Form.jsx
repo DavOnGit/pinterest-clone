@@ -311,7 +311,7 @@ class Form extends Component {
   renderErrors() {
     return (
       <div className="form-errors">
-        {this.state.errors.map((error, index) => 
+        {this.state.errors.map((error, index) =>
           <Flash key={index} message={{content: error.message || this.context.intl.formatMessage({id: error.name}, error.data), type: 'error' }}/>
         )}
       </div>

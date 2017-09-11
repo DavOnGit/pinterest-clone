@@ -36,7 +36,7 @@ const Layout = ({children}) =>
 
     </div>
 
-    <div className="footer">&copy; Pixy</div>
+    <div className="footer">&copy; Whatapik</div>
 
   </div>
 

@@ -19,7 +19,7 @@ const CommentsList = ({results = [], currentUser, loading, loadMore, count, tota
 
     {loading ?
 
-      <p>loading...</p> :
+      <Loading /> :
 
       <div className="comments-items">
         {results.map(comment => <CommentsItem key={comment._id} comment={comment} currentUser={currentUser} />)}

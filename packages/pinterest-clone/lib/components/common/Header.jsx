@@ -1,80 +1,91 @@
 import React from 'react'
-import { Link } from 'react-router'
+import { Link, IndexLink } from 'react-router'
 import { Components, withCurrentUser } from 'meteor/vulcan:core'
 import Users from 'meteor/vulcan:users'
-//import PicsNewForm from '../pics/PicsNewForm'
 import { Navbar, Nav } from 'react-bootstrap'
+import MyModalTrigger from './MyModalTrigger.jsx'
+
+// navigation link wrapper (prevent invalid props on 'li' tags)
+
+const NavLinkWrapper = (props) => <li role='presentation'>{props.children}</li>
 
 // navigation bar component when the user is logged in
 
 const NavLoggedIn = ({currentUser}) =>
 
-  <div className="header-nav header-logged-in">
+  <Nav className='header-nav header-logged-in' pullRight>
 
-    <div className="header-accounts">
+    <NavLinkWrapper>
+      <IndexLink to={'/'} activeClassName='active'>Home</IndexLink>
+    </NavLinkWrapper>
 
-      <Link to={'/'}>Home</Link>
+    <NavLinkWrapper>
+      <Link to={'/uploads'} activeClassName='active'>Uploads</Link>
+    </NavLinkWrapper>
 
-      <Link to={'/uploads'}>Uploads</Link>
+    {Users.isAdmin(currentUser) ?
+      <NavLinkWrapper>
+        <Link to={'/admin'} activeClassName='active'>Admin</Link>
+      </NavLinkWrapper> :
+      null
+    }
 
-      {Users.isAdmin(currentUser) ? <Link to={'/admin'}>Admin</Link> : null}
+    <MyModalTrigger
+      className='header-accounts'
+      label={Users.getDisplayName(currentUser)}
+      size='large'
+      title={Users.getDisplayName(currentUser)}
+      role='presentation'
+    >
+      <Components.AccountsLoginForm />
+    </MyModalTrigger>
 
-      <Components.ModalTrigger
-        label={Users.getDisplayName(currentUser)}
-        size="large"
-        title={Users.getDisplayName(currentUser)}
-      >
-        <div>
-          <Components.AccountsLoginForm />
-        </div>
-      </Components.ModalTrigger>
-
-    </div>
-
-  </div>
+  </Nav>
 
 // navigation bar component when the user is logged out
 
 const NavLoggedOut = ({currentUser}) =>
 
-  <div className="header-nav header-logged-out">
+    <Nav className='header-nav header-logged-out' pullRight>
 
-    <Components.ModalTrigger
-      label="Sign Up/Log In"
-      size="large"
-      title="Login or Signup:"
-    >
-      <Components.AccountsLoginForm />
-    </Components.ModalTrigger>
-
-  </div>
+      <MyModalTrigger
+        className='header-accounts'
+        label='Sign Up/Log In'
+        size='large'
+        title='Login or Signup:'
+        role='presentation'
+      >
+        <Components.AccountsLoginForm />
+      </MyModalTrigger>
+      
+    </Nav>
 
 // Header component
 
 const Header = ({currentUser}) => {
   return (
 
-  <div className="header-wrapper">
+    <div className='header-wrapper'>
 
-    <Navbar inverse collapseOnSelect fluid>
-      <Navbar.Header>
-        <Navbar.Brand>
-          <img src="/packages/pinterest-clone/lib/static/pixy.png" alt="Pixy"/>
-        </Navbar.Brand>
-        <Navbar.Toggle />
-      </Navbar.Header>
+      <Navbar inverse collapseOnSelect fluid>
+        <Navbar.Header>
+          <Navbar.Brand>
+            <img src='/packages/pinterest-clone/lib/static/whatapic_text.png' alt='Pixy'/>
+          </Navbar.Brand>
+          <Navbar.Toggle />
+        </Navbar.Header>
 
-      <Navbar.Collapse>
-        <Nav pullRight>
+        <Navbar.Collapse>
           {currentUser ?
             <NavLoggedIn currentUser={currentUser}/> :
             <NavLoggedOut currentUser={currentUser}/>
           }
-        </Nav>
-      </Navbar.Collapse>
+        </Navbar.Collapse>
 
-    </Navbar>
+      </Navbar>
 
-  </div>)}
+    </div>
+  )
+}
 
 export default withCurrentUser(Header)

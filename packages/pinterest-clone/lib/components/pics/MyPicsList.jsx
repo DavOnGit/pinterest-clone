@@ -3,15 +3,12 @@ import { Components, withCurrentUser, Loading } from 'meteor/vulcan:core'
 import { FormattedMessage } from 'meteor/vulcan:i18n'
 
 import MasonryItem from './MasonryItem.jsx'
-import Masonry from './ModMasonry.jsx'
+import Masonry from './MyMasonry.jsx'
 import PicsNewForm from './PicsNewForm.jsx'
 
-class MyPicsList extends React.PureComponent {
-  
-  render () {
-    const { currentUser, loading } = this.props
+const MyPicsList = ({ currentUser, loading }) => {
     
-    if (!currentUser) { return <p className="admin-home-message"><FormattedMessage id="app.noPermission" /></p>}
+    if (!loading && !currentUser) { return <p className="admin-home-message"><FormattedMessage id="app.noPermission" /></p>}
     
     return (
       <div className='pic-list'>
@@ -20,7 +17,6 @@ class MyPicsList extends React.PureComponent {
           <Loading /> :
           <Masonry
             itemComponent={MasonryItem}
-            alignCenter={true}
             loadingElement={
               <div className="loading-masonry">
                 <Loading />
@@ -41,7 +37,7 @@ class MyPicsList extends React.PureComponent {
 
       </div>
     )
-  }
+  
 }
 
 export default withCurrentUser(MyPicsList)

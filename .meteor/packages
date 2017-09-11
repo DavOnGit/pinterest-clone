@@ -12,6 +12,10 @@ accounts-password@1.4.0
 # accounts-twitter
 # accounts-facebook
 
+############ Admin Packages ############
+
+vulcan:admin
+
 ############ Your Packages ############
 
 # example-simple

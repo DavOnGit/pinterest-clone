@@ -56,8 +56,11 @@
 
 import React from 'react'
 import PropTypes from 'prop-types'
+import { withList } from 'meteor/vulcan:core'
 import classNames from 'classnames'
 import throttle from 'lodash.throttle'
+
+import Pics from '../../modules/pics/collection.js'
 
 const noPage = { stop: 0 }
 const defaultColumnSpanSelector = () => 1
@@ -69,10 +72,16 @@ const classNamePropType = PropTypes.oneOfType([
 ]).isRequired
 
 class Masonry extends React.PureComponent {
-  state = { averageHeight: 300, pages: [] }
+  state = {
+    averageHeight: 300,
+    pages: [],
+    fetchingItems: false
+  }
 
   componentDidMount() {
-    this.layout(this.props)
+    if (this.props.results) {
+      this.layout(this.props)
+    }
     document.addEventListener('scroll', this.onScroll)
     window.addEventListener('resize', this.onResize)
   }
@@ -82,9 +91,17 @@ class Masonry extends React.PureComponent {
     window.removeEventListener('resize', this.onResize)
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.items.length !== this.props.items.length) {
-      this.layout(nextProps)
+  componentWillReceiveProps(newProps) {
+    if (newProps.networkStatus === 7) {
+      this.layout(newProps)
+      this.setState({ fetchingItems: false })
+    }
+  }
+  
+  handleLoadMore = () => {
+    if (this.props.count < this.props.totalCount && !this.state.fetchingItems) {
+      this.setState({ fetchingItems: true })
+      this.props.loadMore()
     }
   }
 
@@ -100,7 +117,7 @@ class Masonry extends React.PureComponent {
     const {
       columnWidth,
       columnGutter,
-      items,
+      results: items,
       itemComponent
     } = props
     
@@ -470,25 +487,19 @@ class Masonry extends React.PureComponent {
   checkInfiniteLoad = () => {
     const bounds = this.node.getBoundingClientRect()
     const threshold = this.props.threshold || window.innerHeight * 2
-    
-    if (bounds.height === 0 || this.state.pages.length === 0) {
-      window.setTimeout(() => {
-        this.checkInfiniteLoad()
-      }, 200)
-      return
-    }
+
     if (bounds.top + bounds.height < window.innerHeight + threshold) {
-      this.props.onInfiniteLoad();
+      this.handleLoadMore()
       return
       
     } else if (threshold > window.scrollHeight - this.getScrollTop()) {
-      this.props.onInfiniteLoad();
+      this.handleLoadMore()
       return
     }
   }
 
   getScrollTop = () => {
-      return window.pageYOffset
+    return window.pageYOffset
   }
 
   getScrollOffset = () => {
@@ -498,7 +509,7 @@ class Masonry extends React.PureComponent {
   }
 
   getViewableHeight = () => {
-      return window.innerHeight
+    return window.innerHeight
   }
 
   onReference = (node) => this.node = node;
@@ -508,52 +519,58 @@ class Masonry extends React.PureComponent {
       containerClassName,
       layoutClassName,
       pageClassName,
-      hasMore,
+      loading,
       loadingElement,
-      isLoading,
+      count,
+      totalCount,
       currentUser,
       itemComponent: Item,
     } = this.props
 
-    const { pages } = this.state
+    const { pages, fetchingItems } = this.state
     const layoutHeight = (pages[pages.length - 1] || noPage).stop
 
     return (
-      <div
-        ref={this.onReference}
-        className={classNames(containerClassName)}>
+      <div>
+        <h1 className='pics-total-count'><small>Pics: {totalCount ? totalCount: 'loading...'}</small></h1>
         <div
-          className={classNames(layoutClassName)}
-          style={{ height: `${layoutHeight}px`, position: 'relative' }}>
-          {pages.map((page, index) => {
-            if (!page.visible) {
-              return null
-            }
-            return (
-              <div
-                className={classNames(pageClassName)}
-                key={index}>
-                {page.items.map(({ props, left, top, width, height, columnSpan }, itemIndex) => {
-                  return (
-                    <Item
-                      key={itemIndex}
-                      columnSpan={columnSpan}
-                      style={{
-                        position: 'absolute',
-                        left: left + 'px',
-                        top: top + 'px',
-                        width: width + 'px'
-                      }}
-                      currentUser={currentUser}
-                      {...props}
-                    />
-                  )
-                })}
-              </div>
-            )
-          })}
+          ref={this.onReference}
+          className={classNames(containerClassName)}>
+          {loading ? loadingElement :
+          <div
+            className={classNames(layoutClassName)}
+            style={{ height: `${layoutHeight}px`, position: 'relative' }}>
+            {pages.map((page, index) => {
+              if (!page.visible) {
+                  return null
+              }
+              return (
+                <div
+                  className={classNames(pageClassName)}
+                  key={index}>
+                  {page.items.map(({ props, left, top, width, height, columnSpan }) => {
+                    return (
+                      <Item
+                        key={props._id}
+                        columnSpan={columnSpan}
+                        style={{
+                            position: 'absolute',
+                            left: left + 'px',
+                            top: top + 'px',
+                            width: width + 'px'
+                        }}
+                        currentUser={currentUser}
+                        {...props}
+                      />
+                    )
+                  })}
+                </div>
+              )
+            })}
+          </div>
+          }
+          {!loading && count < totalCount && fetchingItems && loadingElement}
         </div>
-        {hasMore && isLoading && loadingElement}
       </div>
     )
   }
@@ -566,18 +583,15 @@ Masonry.propTypes = {
   containerClassName: classNamePropType,
   layoutClassName: classNamePropType,
   pageClassName: classNamePropType,
-  hasMore: PropTypes.bool.isRequired,
-  isLoading: PropTypes.bool.isRequired,
-  items: PropTypes.array.isRequired,
+  results: PropTypes.array,
   itemComponent: PropTypes.oneOfType([
     PropTypes.instanceOf(React.Component),
     PropTypes.func
     ]).isRequired,
-  itemProps: PropTypes.object,
   loadingElement: PropTypes.node,
-  onInfiniteLoad: PropTypes.func,
+  loadMore: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired,
   threshold: PropTypes.number,
-  scrollOffset: PropTypes.number,
   currentUser: PropTypes.object
 }
 
@@ -595,4 +609,10 @@ Masonry.defaultProps = {
   currentUser: null
 }
 
-export default Masonry
+const options = {
+  collection: Pics,
+  fragmentName: 'PicsItemFragment',
+  limit: 6
+}
+
+export default withList(options)(Masonry)

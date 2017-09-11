@@ -185,7 +185,7 @@ class Upload extends PureComponent {
               activeClassName="dropzone-active"
               rejectClassName="dropzone-reject"
             >
-              <div>Drop an image here, or click to select an image to upload.</div>
+              <div>Drop an image here, or click to select an image to upload:</div>
             </Dropzone>
 
             {imageData ?

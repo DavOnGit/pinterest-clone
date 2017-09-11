@@ -89,21 +89,21 @@ class Masonry extends React.PureComponent {
     window.removeEventListener('resize', this.onResize)
   }
 
-  componentWillReceiveProps(newProps) {console.log(newProps, this.props)
-    if (this.props.count !== newProps.count) {
+  componentWillReceiveProps(newProps) {
+    if (newProps.networkStatus === 7) {
       this.layout(newProps)
       this.setState({ fetchingItems: false })
     }
   }
   
-  handleLoadMore = () => {console.log('load more called')
-    if (this.props.count < this.props.totalCount && !this.state.fetchingItems) {console.log('load more triggered')
+  handleLoadMore = () => {
+    if (this.props.count < this.props.totalCount && !this.state.fetchingItems) {
       this.setState({ fetchingItems: true })
       this.props.loadMore()
     }
   }
 
-  onResize = throttle(() => {console.log('*** Masonry Resizing ***')
+  onResize = throttle(() => {
     this.layout(this.props, true)
   }, 150, { trailing: true })
 
@@ -486,12 +486,6 @@ class Masonry extends React.PureComponent {
     const bounds = this.node.getBoundingClientRect()
     const threshold = this.props.threshold || window.innerHeight * 2
     
-    // if (bounds.height === 0 || this.state.pages.length === 0) {console.log('FkU!')
-    //   window.setTimeout(() => {
-    //     this.handleLoadMore()
-    //   }, 200)
-    //   return
-    // }
     if (bounds.top + bounds.height < window.innerHeight + threshold) {
       this.handleLoadMore()
       return
@@ -503,7 +497,7 @@ class Masonry extends React.PureComponent {
   }
 
   getScrollTop = () => {
-      return window.pageYOffset
+    return window.pageYOffset
   }
 
   getScrollOffset = () => {
@@ -513,7 +507,7 @@ class Masonry extends React.PureComponent {
   }
 
   getViewableHeight = () => {
-      return window.innerHeight
+    return window.innerHeight
   }
 
   onReference = (node) => this.node = node;
@@ -533,7 +527,7 @@ class Masonry extends React.PureComponent {
 
     const { pages, fetchingItems } = this.state
     const layoutHeight = (pages[pages.length - 1] || noPage).stop
-    console.log('*** MyMasonry isRendering ***')
+
     return (
       <div
         ref={this.onReference}
@@ -550,10 +544,10 @@ class Masonry extends React.PureComponent {
               <div
                 className={classNames(pageClassName)}
                 key={index}>
-                {page.items.map(({ props, left, top, width, height, columnSpan }, itemIndex) => {
+                {page.items.map(({ props, left, top, width, height, columnSpan }) => {
                   return (
                     <Item
-                      key={itemIndex}
+                      key={props._id}
                       columnSpan={columnSpan}
                       style={{
                           position: 'absolute',
@@ -584,21 +578,16 @@ Masonry.propTypes = {
   containerClassName: classNamePropType,
   layoutClassName: classNamePropType,
   pageClassName: classNamePropType,
-  //hasMore: PropTypes.bool.isRequired,
-  //isLoading: PropTypes.bool.isRequired,
   results: PropTypes.array,
   itemComponent: PropTypes.oneOfType([
     PropTypes.instanceOf(React.Component),
     PropTypes.func
     ]).isRequired,
-  //itemProps: PropTypes.object,
   loadingElement: PropTypes.node,
-  //onInfiniteLoad: PropTypes.func,
   loadMore: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
   threshold: PropTypes.number,
-  //scrollOffset: PropTypes.number,
-  currentUser: PropTypes.object.isRequired
+  currentUser: PropTypes.object
 }
 
 Masonry.defaultProps = {

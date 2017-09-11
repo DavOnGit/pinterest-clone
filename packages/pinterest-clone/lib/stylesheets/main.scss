@@ -3,33 +3,48 @@
 @import 'components/Loading';
 @import 'components/PicsList';
 @import 'components/PicsDetails';
+@import 'components/PicUpload';
 
-body { background: #FAFAFA }
+body {
+  background: #111;
+  font-size: 16px;
+}
 
 #wrapper {
   width: 100%;
   margin: 0;
 }
 
-.container-fluid { max-width: 1000px }
+.container-fluid, .main { max-width: 1280px }
 
 .footer {
   text-align: center;
 }
 
 .navbar {
-  min-height: 70px;
+  border: none;
   border-radius: 0;
+  
+  .navbar-brand {
+    padding: 5px 0 0 0;
+    height: 50px;
+  }
+  .navbar-nav > li > a.active {
+    color: deeppink;
+    background-color: #111;
+    
+    &:hover { color: #fff }
+  }
 }
 
-.navbar-header {
-  height: 70px;
-}
+
+
 
 .main {
   position: relative;
   min-height: calc(100vh - 92px);
   min-width: 340px;
+  margin: 0 auto;
 }
 
 .modal_close_btn {

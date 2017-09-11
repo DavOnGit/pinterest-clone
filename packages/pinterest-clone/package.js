@@ -24,7 +24,7 @@ Package.onUse(function (api) {
   api.addFiles(['lib/stylesheets/main.scss'], ['client'])
 
   api.addAssets([
-    'lib/static/pixy.png',
-    'lib/static/icon.png'
+    'lib/static/favicon.png',
+    'lib/static/whatapic_text.png'
   ], ['client']);
 })
